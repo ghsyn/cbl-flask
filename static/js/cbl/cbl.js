@@ -70,31 +70,31 @@ function getCBL(name, url, httpMethod, payload) {
     });
 }
 
-function request(url, httpMethod, payload) {
-    return new Promise(function (resolve, reject) {
-        let xhr = new XMLHttpRequest();
-        xhr.open(httpMethod || 'GET', url);
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let responseData;
-                try {
-                    responseData = JSON.parse(xhr.responseText);
-                } catch (error) {
-                    reject(error);
-                    return;
-                }
-                resolve(responseData);
-            } else {
-                reject(xhr.statusText);
-            }
-        };
-        xhr.onerror = function () {
-            reject(xhr.statusText);
-        };
-        xhr.send(JSON.stringify(payload));
-    })
-}
+// function request(url, httpMethod, payload) {
+//     return new Promise(function (resolve, reject) {
+//         let xhr = new XMLHttpRequest();
+//         xhr.open(httpMethod || 'GET', url);
+//         xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+//         xhr.onload = function () {
+//             if (xhr.status === 200) {
+//                 let responseData;
+//                 try {
+//                     responseData = JSON.parse(xhr.responseText);
+//                 } catch (error) {
+//                     reject(error);
+//                     return;
+//                 }
+//                 resolve(responseData);
+//             } else {
+//                 reject(xhr.statusText);
+//             }
+//         };
+//         xhr.onerror = function () {
+//             reject(xhr.statusText);
+//         };
+//         xhr.send(JSON.stringify(payload));
+//     })
+// }
 
 function drawChart(name, val) {
 
@@ -147,4 +147,18 @@ function drawGrid(id, data) {
         });
     }
     grid.resetData(data);
+}
+
+function btnSearch(v) {
+    if (v === '오늘' || v === '검색') {
+        let res = request('/cbl/searchDtm', 'POST', {'command_date':'2020-12-12'});
+        res = res.then(function(data){
+           //console.log(data.data);
+           console.log(data.datas)
+        }).catch(function(err){
+
+        });
+    } else if (v === '최근') {
+        alert('최근')
+    }
 }

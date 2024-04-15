@@ -1,0 +1,21 @@
+###
+POST http://localhost:5000/cbl/searchDtm
+Content-Type: application/json
+
+{
+  "command_date" : "2020-12-12"
+}
+
+###
+POST http://localhost:5000/cbl/setHistory
+Content-Type: application/json
+
+[
+  {
+    "HIST_TIME": "1900-01-23 11:00:00",
+    "DELT_VAL": 7.77
+  },
+  {
+    "DELT_VAL": 8.88
+  }
+]

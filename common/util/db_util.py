@@ -1,79 +1,60 @@
-import os
-from typing import Sequence
-
-from sqlalchemy import create_engine, text, RowMapping
+from pymysql.cursors import DictCursor
+from sqlalchemy import create_engine, text, Subquery, RowMapping, select, MetaData, Table, Column, String, Double, DateTime
 from sqlalchemy.orm import sessionmaker
 
+from common.annotation.singleton import singleton
+from common.config.global_config import GlobalConfig
 from common.util.common_util import Log
+from enum import Enum
 
-_select_str = "SELECT * FROM"
-_where_str = " WHERE "
-_ord_str = " ORDER BY "
-_limit_str = " LIMIT "
 
-# os.putenv('MARIA_DB_USER', 'root')
-# os.putenv('MARIA_DB_PASSWORD', '1q2w3e4r!')
-# os.putenv('MARIA_DB_HOST', 'localhost')
-# os.putenv('MARIA_DB_NAME', 'elt_dr')
-#
-# user = os.getenv('MARIA_DB_USER')
-# password = os.getenv('MARIA_DB_PASSWORD')
-# host = os.getenv('MARIA_DB_HOST')
-# name = os.getenv('MARIA_DB_TABLE_NAME')
+class SqlType(Enum):
+    SELECT = 1
+    INSERT = 2
+    UPDATE = 3
+    DELETE = 4
 
+@singleton
 class DBManager:
-
     def __init__(self):
-        self.logger = Log("DBManager").make_logger()
+        # self.logger = Log("DBManager").make_logger()
+        self.prop = GlobalConfig('properties.ini').read_config()["DB"]
 
-        # TODO: db 정보 저장 방법 최적화
-        # self.engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{name}?charset=utf8', echo=True)
-        self.engine = create_engine('mysql+pymysql://root:1q2w3e4r!@localhost/elt_dr?charset=utf8', echo=True)
-        self.session_factory = sessionmaker(bind=self.engine)
+        self.engine = create_engine('mysql+pymysql://{user}:{password}@{host}/{db_name}?charset={charset}'.format(
+            user=self.prop['user'],
+            password=self.prop['password'],
+            host=self.prop['host'],
+            db_name=self.prop['db_name'],
+            charset=self.prop['charset']),
+            execution_options={
+                'autocommit': True,
+                'pool_pre_ping': True,
+                'pool_recycle': 3600,
+                'pool_size': 10,
+            })
+        self.session = sessionmaker(bind=self.engine)
 
-    def __execute_sql(self, sql):
+    def execute_query(self, query, sql_type: SqlType):
+        """
+        쿼리 실행 함수
+        :param query: 실행할 쿼리
+        :param sql_type: 쿼리 유형
+        :return: 실행 결과 값 (dict or int)
+        """
+        session = self.session()
         try:
-            self.engine = self.session_factory()
-            print(sql)
-            return self.engine.execute(text(sql)).mappings().fetchall()
+            if sql_type == SqlType.SELECT:
+                con = session.connection()
+                with con.connection.cursor(DictCursor) as cursor:
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    return rows
+            else:
+                res = session.connection().execute(text(query))
+                session.commit()
+                return res.rowcount
         except Exception as e:
-            self.engine.rollback()
-            self.logger.error(e)
+            session.rollback()
+            return -1
         finally:
-            self.engine.close()
-
-    def select_all(self, table, where=None, order=None, limit=None):
-        sql = "{} {}".format(_select_str, table)
-        if where:
-            sql += _where_str + where
-        if order:
-            sql += _ord_str + order
-        if limit:
-            sql += _limit_str + str(limit)
-        return self.__execute_sql(sql)
-
-    '''
-    **kwargs = [HIST_TIME='%Y-%m-%d %T',DELT_VAL=None]
-    '''
-    def select_for_date_format(self, table, **kwargs) -> Sequence[RowMapping]:
-        try:
-            if kwargs.__len__() == 0:
-                self.logger.error("column is empty")
-                return {}
-            cols = ""
-
-            for key, value in kwargs.items():
-                if value is None:
-                    cols += key + ", "
-                elif value is not None:
-                    if not isinstance(value, str):
-                        value = "\'{}\'".format(str(value))
-                    cols += "DATE_FORMAT({}, '{}') AS {}, ".format(key, value, key)
-
-            cols = cols[:-2]
-            sql = "SELECT " + cols + " FROM " + table + ";"
-            print(sql)
-            result = self.__execute_sql(sql)
-            return result
-        except Exception as e:
-            self.logger.error(e)
+            session.close()

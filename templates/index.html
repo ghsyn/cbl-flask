@@ -25,111 +25,21 @@
     <div class="box">
         <span>조회 조건</span>
         <div class="btn">
-            <input type="button" id="beforeBtn" value="<" onclick="shiftDate(value)"/>
+            <input type="button" id="beforeBtn" value="<" onclick="shiftDate(value);"/>
             <input type="date" id="commandDate" required/>
-            <input type="button" id="afterBtn" value=">" onclick="shiftDate(value)"/>
+            <input type="button" id="afterBtn" value=">" onclick="shiftDate(value);"/>
 
-            <input type="button" value="오늘" onclick="btnSearch(value)">
-            <input type="button" value="최근" onclick="btnSearch(value)">
-            <input type="button" value="검색" onclick="btnSearch(value)">
+            <input type="button" value="오늘" onclick="btnSearch(this.value);">
+            <input type="button" value="최근" onclick="btnSearch(this.value);">
+            <input type="button" value="검색" onclick="btnSearch(this.value);">
         </div>
+    <script type="text/javascript" src="/static/js/cbl/cbl.js"></script>
     </div>
 
     <div id="chart"></div>
     <div id="grid"></div>
 
 
-
-    <script>
-        let grid = null;
-
-        $(function () {
-            initComponents();
-            initParams();
-            initDatas();
-        });
-
-        function initComponents() {}
-        function initParams() {}
-        function initDatas() {}
-
-        <!--
-        request('/drawChart', 'POST', {}).then(function(data){
-            if(!data){
-                alert('데이터가 존재하지 않습니다.');
-                return;
-            }
-            console.log(data);
-            drawChart('chart', data);
-        }).catch(function(err){
-           alert('오류가 발생.');
-
-        })
-        -->
-
-        function shiftDate(v) {
-            let date = new Date($('#commandDate').val());
-
-            if (v === '<') {
-                date.setDate(date.getDate - 1);
-            } else if (v === '>') {
-                date.setDate(date.getDate + 1);
-            }
-
-            $('#commandDate').val(date);
-
-            if (date.format('yyyy-MM-dd') >= new Date().format('yyyy-MM-dd')) {
-                $('#afterBtn').disabled = true;
-            } else if (date.format("yyyy-MM-dd") < new Date().format("yyyy-MM-dd")) {
-                $('#afterBtn').disabled = false;
-            }
-        }
-
-        function btnSearch(v) {
-            if (v === '오늘' || v === '검색') {
-                alert('오늘 or 검색')
-            } else if (v === '최근') {
-                alert('최근')
-            }
-        }
-
-        function drawChart(id, data) {
-            let mid610 = {
-                x: val['HIST_TIME'],
-                y: val['MID610'],
-                mode: 'lines+markers',
-                name: 'MID610'
-            };
-
-            // let mid46 = {
-            //     x: val['CBL_TIME'],
-            //     y: val['MID46'],
-            //     mode: 'lines+markers',
-            //     name: 'MID46'
-            // }
-
-            //let mid810 = {
-            //    x: val['CBL_TIME'],
-            //    y: val['MID810'],
-            //    mode: 'lines+markers',
-            //    name: 'MID810'
-            //};
-
-            let chartData = [mid610]
-
-            let layout = {
-                title: id,
-                xaxis: {
-                    title: 'DTM'
-                },
-                yaxis: {
-                    title: 'CBL'
-                }
-            }
-
-            Plotly.newPlot('cblChart', chartData, layout);
-        }
-    </script>
 {% endblock %}
 {% block footer %}
     {{ super() }}

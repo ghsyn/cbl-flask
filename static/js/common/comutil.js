@@ -1092,12 +1092,12 @@ function addCsrfHiddenInputTag(frm) {
     inp.value = $("meta[name='_csrf']").attr("content");
     $(frm).append(inp);
 }
-
 function request(url, httpMethod, payload) {
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open(httpMethod || 'GET', url);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let responseData;
@@ -1116,5 +1116,5 @@ function request(url, httpMethod, payload) {
             reject(xhr.statusText);
         };
         xhr.send(JSON.stringify(payload));
-    })
+    });
 }
