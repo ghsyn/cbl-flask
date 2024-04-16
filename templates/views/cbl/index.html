@@ -1,8 +1,8 @@
-{% extends "layout.html" %}
+{% extends "layout/layout.html" %}
 {% block title %}CBL Page{% endblock %}
 {% block head %}
     {{ super() }}
-
+    <script type="text/javascript" src="/static/js/cbl/cbl.js"></script>
     <style>
         .box {
             margin: 10px;
@@ -17,6 +17,7 @@
         }
     </style>
 {% endblock %}
+
 {% block contents %}
     <div class="box">
         <h1>전력 사용량 차트</h1>
@@ -29,16 +30,14 @@
             <input type="date" id="commandDate" required/>
             <input type="button" id="afterBtn" value=">" onclick="shiftDate(value);"/>
 
-            <input type="button" value="오늘" onclick="btnSearch(this.value);">
-            <input type="button" value="최근" onclick="btnSearch(this.value);">
-            <input type="button" value="검색" onclick="btnSearch(this.value);">
+            <input type="button" value="오늘" onclick="btnSearch(value, new Date().format('yyyy-MM-dd'));">
+            <input type="button" value="최근" onclick="btnSearch(value, new Date().format('yyyy-MM-dd'));">
+            <input type="button" value="검색" onclick="btnSearch(value, $('#commandDate').val());">
         </div>
-    <script type="text/javascript" src="/static/js/cbl/cbl.js"></script>
     </div>
 
-    <div id="chart"></div>
-    <div id="grid"></div>
-
+    <div id="cblChart"></div>
+    <div id="cblGrid"></div>
 
 {% endblock %}
 {% block footer %}

@@ -1,7 +1,7 @@
 import configparser, os
 
 
-class GlobalConfig():
+class GlobalConfig:
     def __init__(self, file_name):
         self.file_name = file_name
 

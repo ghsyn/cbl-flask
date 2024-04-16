@@ -6,6 +6,7 @@ class Singleton:
 
     def __call__(self, *args, **kwargs):
         if not self.instance:
+            print(*args, **kwargs)
             self.instance = self.cls(*args, **kwargs)
         return self.instance
 

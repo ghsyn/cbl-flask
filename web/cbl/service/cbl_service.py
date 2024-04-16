@@ -12,7 +12,6 @@ class CBlService:
         :return: db_util에서 쿼리 실행
         """
         command_date = json_param.get('command_date')
-        print(json_param, command_date)
         sql = f'''
             SELECT DATE_FORMAT(CBL_TIME, '%Y-%m-%d %T') AS CBL_TIME,
                ROUND(MID610, 2) AS MID610,
@@ -21,13 +20,18 @@ class CBlService:
             FROM DR_SCBL
             WHERE CBL_TIME LIKE CONCAT('{command_date}', '%')
         '''
-        return self.db.execute_query(sql, SqlType.SELECT)
+        ret = self.db.execute_query(sql, SqlType.SELECT)
+
+        if ret is None or len(ret) == 0:
+            return None
+
+        return ret
 
     def set_hist_data(self, json_param):
         """
-
-        :param json_param:
-        :return:
+        history data insert
+        :param json_param: insert할 data
+        :return: db_util에서 쿼리 실행
         """
         try:
             sql = '''

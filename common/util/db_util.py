@@ -1,23 +1,16 @@
 from pymysql.cursors import DictCursor
-from sqlalchemy import create_engine, text, Subquery, RowMapping, select, MetaData, Table, Column, String, Double, DateTime
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-
 from common.annotation.singleton import singleton
 from common.config.global_config import GlobalConfig
-from common.util.common_util import Log
-from enum import Enum
+from common.enums.com_enum import SqlType
+from common.util.log_util import LogUtil
 
-
-class SqlType(Enum):
-    SELECT = 1
-    INSERT = 2
-    UPDATE = 3
-    DELETE = 4
 
 @singleton
 class DBManager:
     def __init__(self):
-        # self.logger = Log("DBManager").make_logger()
+        self.logger = LogUtil("DBManager").make_logger()
         self.prop = GlobalConfig('properties.ini').read_config()["DB"]
 
         self.engine = create_engine('mysql+pymysql://{user}:{password}@{host}/{db_name}?charset={charset}'.format(
@@ -39,7 +32,7 @@ class DBManager:
         쿼리 실행 함수
         :param query: 실행할 쿼리
         :param sql_type: 쿼리 유형
-        :return: 실행 결과 값 (dict or int)
+        :return: 실행 결과 값 (SELECT -> dict, INSERT, DELETE, UPDATE -> int)
         """
         session = self.session()
         try:
@@ -54,6 +47,7 @@ class DBManager:
                 session.commit()
                 return res.rowcount
         except Exception as e:
+            print(e.__getstate__())
             session.rollback()
             return -1
         finally:

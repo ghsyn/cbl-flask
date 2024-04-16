@@ -1,18 +1,18 @@
 let grid = null;
 
-$(document).ready(function(){
+$(function () {
     initComponents();
     initParams();
     initDatas();
+})
 
-});
-
-
-function initComponents(){
-    document.getElementById("commandDate").value=new Date().format("yyyy-MM-dd");
+function initComponents() {
+    document.getElementById("commandDate").value = new Date().format("yyyy-MM-dd");
 }
-function initParams(){}
-function initDatas(){}
+
+function initParams() {}
+
+function initDatas() {}
 
 function shiftDate(v) {
     let date = new Date($("#commandDate").val());
@@ -27,76 +27,43 @@ function shiftDate(v) {
     document.getElementById("commandDate").valueAsDate = date;
 
     if (date.format("yyyy-MM-dd") >= new Date().format("yyyy-MM-dd")) {
-        // $("#afterbtn").attr('disabled','disabled');
-        document.getElementById('afterbtn').disabled = true;
+        document.getElementById('afterBtn').disabled = true;
     } else if (date.format("yyyy-MM-dd") < new Date().format("yyyy-MM-dd")) {
-        document.getElementById('afterbtn').disabled = false;
+        document.getElementById('afterBtn').disabled = false;
     }
 }
 
-// function getCBL(name, url, httpMethod, param) {
-//     return new Promise(function (resolve, reject) {
-//         $.ajax({
-//             url: url,
-//             contentType: 'application/json; charset=utf-8',
-//             type: (httpMethod === null) ? "GET" : httpMethod,
-//             data: JSON.stringify(param),
-//             dataType: "json",
-//             success: function (response) {
-//                 resolve(response);
-//             },
-//             error: function (XMLHttpRequest, textStatus, errorThrown) {
-//                 alert("get data error");
-//                 reject();
-//             }
-//         })
-//     }).then(function (data) {
-//         drawChart(name, data['chart']);
-//         drawGrid(name, data['grid']);
-//     });
-// }
-
-function getCBL(name, url, httpMethod, payload) {
-    let req = request(url, httpMethod, payload);
-    req.then(function (data) {
-        if (!Object.keys(data).length) {
-            alert("Unsaved");
-        } else {
-            drawChart(name, data['chart']);
-            drawGrid(name, data['grid']);
-        }
-    }).catch(function (err) {
-        console.log(err);
-    });
+function btnSearch(v, req) {
+    if (v === '오늘' || v === '검색') {
+        request('/cbl/searchDtm', 'POST', {'command_date': req})
+            .then(function (res) {
+                if (res['result'] === 'FAIL') {
+                    alert("Data Unsaved")
+                } else {
+                    drawChart(v + ": " + req, res.chart)
+                    drawGrid(res.grid)
+                }
+            }).catch(function (err) {
+            alert("request 오류 발생")
+            console.log(err)
+        })
+    } else if (v === '최근') {
+        alert('최근')
+    }
 }
 
-// function request(url, httpMethod, payload) {
-//     return new Promise(function (resolve, reject) {
-//         let xhr = new XMLHttpRequest();
-//         xhr.open(httpMethod || 'GET', url);
-//         xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-//         xhr.onload = function () {
-//             if (xhr.status === 200) {
-//                 let responseData;
-//                 try {
-//                     responseData = JSON.parse(xhr.responseText);
-//                 } catch (error) {
-//                     reject(error);
-//                     return;
-//                 }
-//                 resolve(responseData);
-//             } else {
-//                 reject(xhr.statusText);
-//             }
-//         };
-//         xhr.onerror = function () {
-//             reject(xhr.statusText);
-//         };
-//         xhr.send(JSON.stringify(payload));
-//     })
-// }
-
-function drawChart(name, val) {
+/**
+ * 차트 그리는 함수
+ * val 형식
+ * {
+ *    'CBL_TIME': ['yyyy-mm-dd 00:00:00', 'yyyy-mm-dd 01:00:00', 'yyyy-mm-dd 02:00:00', ... ],
+ *    'MID610': [x.xx, x.xx, x.xx, ...],
+ *    ...
+ * }
+ * @param title 버튼명: yyyy-mm-dd
+ * @param val
+ */
+function drawChart(title, val) {
 
     let mid610 = {
         x: val['CBL_TIME'],
@@ -122,24 +89,28 @@ function drawChart(name, val) {
     let data = [mid610, mid46, mid810];
 
     let layout = {
-        title: name,
+        title: title,
         xaxis: {
             title: 'command datetime'
         },
         yaxis: {
-            title: 'CBL value'
+            title: 'cbl values'
         }
     };
 
     Plotly.newPlot('cblChart', data, layout);
 }
 
-function drawGrid(id, data) {
+/**
+ * 그리드 그리는 함수
+ * @param data
+ */
+function drawGrid(data) {
     if (grid == null) {
         grid = new tui.Grid({
             el: document.getElementById('cblGrid'),
             columns: [
-                {header: 'Datetime', name: 'CBL_TIME'},
+                {header: 'datetime', name: 'CBL_TIME'},
                 {header: 'MID610', name: 'MID610'},
                 {header: 'MID46', name: 'MID46'},
                 {header: 'MID810', name: 'MID810'},
@@ -147,18 +118,4 @@ function drawGrid(id, data) {
         });
     }
     grid.resetData(data);
-}
-
-function btnSearch(v) {
-    if (v === '오늘' || v === '검색') {
-        let res = request('/cbl/searchDtm', 'POST', {'command_date':'2020-12-12'});
-        res = res.then(function(data){
-           //console.log(data.data);
-           console.log(data.datas)
-        }).catch(function(err){
-
-        });
-    } else if (v === '최근') {
-        alert('최근')
-    }
 }
