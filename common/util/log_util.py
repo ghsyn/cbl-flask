@@ -5,10 +5,10 @@ from pathlib import Path
 
 
 class LogUtil:
-    def __init__(self, __name__):
+    def __init__(self, name):
         # 로거 설정
-        self.logger = logging.getLogger(__name__)
-        self.name = __name__
+        self.logger = logging.getLogger(name)
+        self.name = name
 
     def make_logger(self):
         #  출력별 Handler 생성

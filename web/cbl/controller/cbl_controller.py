@@ -5,7 +5,7 @@ from web.cbl.service.cbl_service import CBlService
 
 cbl = Blueprint('cbl', __name__, url_prefix='/cbl')
 cbl_service = CBlService()
-logger = LogUtil("CblController").make_logger()
+logger = LogUtil(__name__).make_logger()
 
 
 @cbl.route('/', methods=['GET'])

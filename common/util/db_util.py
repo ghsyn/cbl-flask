@@ -10,7 +10,7 @@ from common.util.log_util import LogUtil
 @singleton
 class DBManager:
     def __init__(self):
-        self.logger = LogUtil("DBManager").make_logger()
+        self.logger = LogUtil(__name__).make_logger()
         self.prop = GlobalConfig('properties.ini').read_config()["DB"]
 
         self.engine = create_engine('mysql+pymysql://{user}:{password}@{host}/{db_name}?charset={charset}'.format(
