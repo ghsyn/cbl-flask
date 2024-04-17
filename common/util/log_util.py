@@ -14,7 +14,7 @@ class LogUtil:
         #  출력별 Handler 생성
         handler_stream = logging.StreamHandler()
         handler_file = logging.FileHandler(
-            filename='D:/cbl_web/cbl_flask/logs/{}_{}.log'.format(self.name, datetime.now().strftime('%y%m')),
+            filename='../../logs/{}_{}.log'.format(self.name, datetime.now().strftime('%y%m')),
             encoding='utf-8'
         )
 
