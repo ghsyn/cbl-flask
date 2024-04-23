@@ -1,0 +1,61 @@
+{% extends "layout/layout.html" %}
+{% block title %}Power generation Page{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script>
+        let grid = null
+
+        $(function () {
+            initComponents();
+            initParams();
+            initDatas();
+        })
+
+        function initComponents() {
+        }
+
+        function initParams() {
+        }
+
+        function initDatas() {
+            request('/plant', 'POST')
+                .then(function (res) {
+                    if (res['result'] === 'FAIL') {
+                        alert('데이터 가져오지 못함')
+                    } else {
+                        drawPlantGrid(res.data)
+                    }
+                }).catch(function (err) {
+                alert('오류 발생')
+                console.log(err)
+            })
+        }
+
+        function drawPlantGrid(data) {
+            if (grid == null) {
+                grid = new tui.Grid({
+                    el: document.getElementById('plantGrid'),
+                    columns: [
+                        {header: 'expl', name: 'expl'},
+                        {header: 'name', name: 'name'},
+                        {header: 'time', name: 'time'},
+                        {header: 'value', name: 'value'},
+                    ]
+                });
+            }
+            grid.resetData(data);
+        }
+
+    </script>
+{% endblock %}
+
+{% block contents %}
+    <div>
+        <h2>원전 출력</h2>
+    </div>
+    <div id="plantGrid"></div>
+
+{% endblock %}
+{% block footer %}
+    {{ super() }}
+{% endblock %}

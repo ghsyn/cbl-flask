@@ -1,6 +1,7 @@
 from flask import Flask
 from web.cbl.controller.cbl_controller import cbl
 from web.user.controller.user_controller import user
+from web.plant.controller.plant_controller import blp_plant
 
 
 def create_app():
@@ -8,6 +9,7 @@ def create_app():
     # CORS(web_app)
     web_app.register_blueprint(cbl)
     web_app.register_blueprint(user)
+    web_app.register_blueprint(blp_plant)
     web_app.template_folder = 'templates'
     web_app.static_folder = 'static'
     web_app.config['TEMPLATES_AUTO_RELOAD'] = True

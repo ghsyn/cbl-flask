@@ -12,14 +12,15 @@ def has_children(element) -> bool:
         return True if i.findall('*') else False
 
 
-def find_value(my_tree, start_tag):
+def parse_xml(xml_file, start_tag):
     """
-    xml 파싱
-    :param my_tree: xml구조의 트리
+    file 형식의 xml 파싱 함수
+    :param xml_file: 파싱할 xml file
     :param start_tag: 시작 태그
     :return: [{Tag: Value}, {Tag: Value}, ... ]
     """
-    root = my_tree.find(start_tag)
+    tree = ET.parse(xml_file)
+    root = tree.find(start_tag)
 
     val_list = list()
     val = dict()
@@ -31,21 +32,3 @@ def find_value(my_tree, start_tag):
             val.update({i.tag: i.text})
 
     return val_list
-
-
-if __name__ == '__main__':
-    # 문자열 값으로 존재하는 경우
-    # tree = ET.fromstring(response.text)
-
-    # 파일로 존재하는 경우
-    #  원전 정보 파싱
-    khnp_tree = ET.parse(r'D:\cbl_web\cbl_flask\static\data\khnp.xml')
-    ret = find_value(khnp_tree, 'body')
-    for i in ret:
-        print(i)
-
-    # maven pom file 파싱
-    pom_tree = ET.parse(r'D:\cbl_web\cbl_flask\static\data\pom.xml')
-    ret = find_value(pom_tree, '{http://maven.apache.org/POM/4.0.0}dependencies')
-    for i in ret:
-        print(i)

@@ -14,7 +14,7 @@ class LogUtil:
         #  출력별 Handler 생성
         handler_stream = logging.StreamHandler()
         handler_file = logging.FileHandler(
-            filename='../../logs/{}_{}.log'.format(self.name, datetime.now().strftime('%y%m')),
+            filename='./logs/{}_{}.log'.format(self.name, self.name, datetime.now().strftime('%Y%m%d')),
             encoding='utf-8'
         )
 
