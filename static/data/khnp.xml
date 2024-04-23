@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+	<header>
+		<resultCode>00</resultCode>
+		<resultMsg>NORMAL SERVICE.</resultMsg>
+	</header>
+	<body>
+		<items>
+			<item>
+				<expl>고리1호기 발전기 출력</expl>
+				<name>2111-PWRGEN.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>0</value>
+			</item>
+			<item>
+				<expl>고리1호기 원자로 출력</expl>
+				<name>2111-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>0</value>
+			</item>
+			<item>
+				<expl>고리2호기 발전기 출력</expl>
+				<name>2112-PWRGEN.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>680</value>
+			</item>
+			<item>
+				<expl>고리2호기 원자로 출력</expl>
+				<name>2112-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+                <value>100</value>
+			</item>
+			<item>
+				<expl>고리3호기 발전기 출력</expl>
+				<name>2123-PWRGEN.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>1,042</value>
+			</item>
+			<item>
+				<expl>고리3호기 원자로 출력</expl>
+				<name>2123-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>100</value>
+			</item>
+			<item>
+				<expl>고리4호기 발전기 출력</expl>
+				<name>2124-PWRGEN.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>1,043</value>
+			</item>
+			<item>
+				<expl>고리4호기 원자로 출력</expl>
+				<name>2124-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>100</value>
+			</item>
+			<item>
+				<expl>신고리1호기 발전기 출력</expl>
+				<name>2135-PWRGEN.C</name>
+                				<time>2022-09-20 09:53</time>
+				<value>0</value>
+			</item>
+			<item>
+				<expl>신고리1호기 원자로 출력</expl>
+				<name>2135-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>0</value>
+			</item>
+			<item>
+				<expl>신고리2호기 발전기 출력</expl>
+				<name>2136-PWRGEN.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>1,040</value>
+			</item>
+			<item>
+				<expl>신고리2호기 원자로 출력</expl>
+				<name>2136-PWRRX.C</name>
+				<time>2022-09-20 09:53</time>
+				<value>100</value>
+			</item>
+		</items>
+	</body>
+	<numOfRows>10</numOfRows>
+	<pageNo>1</pageNo>
+	<totalCount>12</totalCount>
+</response>
