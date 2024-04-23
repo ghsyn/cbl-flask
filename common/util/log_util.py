@@ -11,10 +11,12 @@ class LogUtil:
         self.name = name
 
     def make_logger(self):
+        import os
+        print("path: ", os.getcwd())
         #  출력별 Handler 생성
         handler_stream = logging.StreamHandler()
         handler_file = logging.FileHandler(
-            filename='./logs/{}_{}.log'.format(self.name, self.name, datetime.now().strftime('%Y%m%d')),
+            filename='./logs/{}_{}.log'.format(self.name, datetime.now().strftime('%Y%m%d')),
             encoding='utf-8'
         )
 
